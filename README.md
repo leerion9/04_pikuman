@@ -1,7 +1,7 @@
-# pikuman4 : nemo puzzle
+# pikuman4 : nonogram
 
-**네모로직(네모네모) 퍼즐 게임**  
-패키지명: `pikuman4_nemo_puzzle` | 앱 ID: `com.interpage.pikuman4`  
+**네모로직(노노그램, Nonogram) 퍼즐 게임**  
+패키지명: `pikuman4_nonogram` | 앱 ID: `com.interpage.pikuman4`  
 타겟: 안드로이드 플레이스토어
 
 ---

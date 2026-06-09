@@ -1,9 +1,9 @@
 ## 1. 프로젝트 개요
-::: 앱 이름 - pikuman4 : nemo puzzle (스토어·UI 표기)
-::: pubspec name - pikuman4_nemo_puzzle
+::: 앱 이름 - pikuman4 : nonogram (스토어·UI 표기)
+::: pubspec name - pikuman4_nonogram
 ::: 앱 ID (Android/iOS 공통) - com.interpage.pikuman4
-::: 앱 표시명 - pikuman4 : nemo puzzle
-::: 앱 종류 - 네모로직(네모네모) 퍼즐 게임
+::: 앱 표시명 - pikuman4 : nonogram
+::: 앱 종류 - 네모로직(노노그램, Nonogram) 퍼즐 게임
 ::: 앱 특징 - 관리자가 서버에 업로드한 퍼즐을 가져와서 푸는 방식. 레벨은 서버에서 지속 추가됨
 ::: 앱 언어 - 기본 언어는 한국어이며, 한국어만 지원
 ::: 앱 기능 - 터치 스크린 기능을 사용하는 모바일 용 게임 앱

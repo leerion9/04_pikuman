@@ -1,5 +1,5 @@
-name: pikuman4_nemo_puzzle
-description: "pikuman4 : nemo puzzle - 네모로직 퍼즐 게임"
+name: pikuman4_nonogram
+description: "pikuman4 : nonogram - 네모로직(노노그램) 퍼즐 게임"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
