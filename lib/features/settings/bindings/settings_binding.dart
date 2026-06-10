@@ -1,14 +1,11 @@
-// 설정 화면 바인딩: SettingsController를 주입합니다.
-
+// 설정 화면 의존성 주입 파일 - 설정 화면에서 필요한 컨트롤러를 등록하는 파일
 import 'package:get/get.dart';
-
-import '../../../core/services/settings_service.dart';
 import '../controllers/settings_controller.dart';
 
-/// 설정 화면 바인딩
+/// 설정 화면 진입 시 SettingsController를 등록합니다.
 class SettingsBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put(SettingsController(Get.find<SettingsService>()));
+    Get.lazyPut(() => SettingsController());
   }
 }

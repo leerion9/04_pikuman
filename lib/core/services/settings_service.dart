@@ -1,38 +1,16 @@
-// 설정 서비스: 효과음·BGM·진동 설정값을 SharedPreferences에 저장하고 불러옵니다.
+// 설정 저장 서비스 - 사운드·진동·오류표시 등 앱 설정값을 SharedPreferences에 저장하고 불러오는 파일
+// Phase 6에서 구현 예정
+import 'package:get/get.dart';
 
-import 'package:shared_preferences/shared_preferences.dart';
-
-/// 효과음·BGM·진동 설정을 로컬에 저장하고 불러오는 서비스.
-class SettingsService {
-  SettingsService(this._prefs);
-
-  final SharedPreferences _prefs;
-
-  static const String _keySfx = 'settings_sfx';
-  static const String _keyMusic = 'settings_music';
-  static const String _keyVibration = 'settings_vibration';
-
-  /// 효과음 재생 여부 (기본값: true)
-  bool get sfxEnabled => _prefs.getBool(_keySfx) ?? true;
-
-  /// BGM 재생 여부 (기본값: true)
-  bool get musicEnabled => _prefs.getBool(_keyMusic) ?? true;
-
-  /// 진동 사용 여부 (기본값: true)
-  bool get vibrationEnabled => _prefs.getBool(_keyVibration) ?? true;
-
-  /// 효과음 설정 저장
-  Future<void> setSfxEnabled(bool value) async {
-    await _prefs.setBool(_keySfx, value);
-  }
-
-  /// BGM 설정 저장
-  Future<void> setMusicEnabled(bool value) async {
-    await _prefs.setBool(_keyMusic, value);
-  }
-
-  /// 진동 설정 저장
-  Future<void> setVibrationEnabled(bool value) async {
-    await _prefs.setBool(_keyVibration, value);
-  }
+/// 앱 설정값을 관리하는 전역 서비스
+/// SharedPreferences를 통해 앱 종료 후에도 설정이 유지됩니다.
+///
+/// 관리하는 설정 항목:
+/// - isMusicOn: 배경음악 ON/OFF
+/// - isSoundOn: 효과음 ON/OFF
+/// - isVibrationOn: 진동 피드백 ON/OFF
+/// - isEasyMode: 오류 즉시 표시 모드 ON/OFF (ON=Easy, OFF=Normal)
+class SettingsService extends GetxService {
+  // TODO: Phase 6에서 구현
+  // SharedPreferences를 이용한 설정값 저장·불러오기 로직 추가 예정
 }

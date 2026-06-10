@@ -137,21 +137,23 @@ assets/
 
 ## 개발 단계 계획
 
-### Phase 0: 프로젝트 기반 설정 (예정)
-- [ ] 기존 pikuman3 코드 정리 (pikuman4에 맞게 전면 교체)
-- [ ] pubspec.yaml 패키지 업데이트 (sqflite, http/dio 추가, 불필요 패키지 제거)
-- [ ] 앱 ID·이름·테마 색상 변경
-- [ ] 전체 폴더 구조 재생성 (gallery 추가, engine 재설계)
-- [ ] assets/data/puzzles/ 폴더 구성
+### Phase 0: 프로젝트 기반 설정 ✅ 완료
+- [x] 기존 pikuman3 코드 정리 (pikuman4에 맞게 전면 교체)
+- [x] pubspec.yaml 패키지 업데이트 (sqflite, http 추가, 불필요 패키지 제거)
+- [x] 전체 폴더 구조 재생성 (gallery 추가, engine 재설계)
+- [x] assets/data/puzzles/ 폴더 구성
+- [x] 각 폴더 GUIDE.md 작성
+- [x] flutter analyze: 오류 없음 확인
 
 ### Phase 1: 데이터 레이어 구축 (예정)
 - [ ] SQLite DB 구조 설계 및 헬퍼 구현 (puzzles, progress, cleared 테이블)
 - [ ] 번들 JSON 로더 구현 (assets/data/puzzles/)
 - [ ] 서버 API 통신 구현 (⚠️ 미결 1 확인 후 진행)
 
-### Phase 2: 네모로직 엔진 구현 (예정)
-- [ ] 클루(힌트) 계산 로직 (이진 배열 → 행·열 숫자 배열)
-- [ ] 퍼즐 검증 로직 (정답 비교)
+### Phase 2: 네모로직 엔진 구현 ✅ 완료
+- [x] `nonogram_model.dart`: 퍼즐 데이터 모델 + 플레이어 진행 상태 모델 (JSON ↔ Dart)
+- [x] `clue_calculator.dart`: 이진 배열 → 행·열 클루 계산
+- [x] `puzzle_validator.dart`: 클루 기반 정답 검증 + Easy 모드 셀 단위 검증
 
 ### Phase 3: 화면 뼈대 + 네비게이션 (예정)
 - [ ] GetX 라우팅 설정
@@ -168,11 +170,13 @@ assets/
 
 ### Phase 6: 설정·사운드·광고 (예정)
 
-### Phase 7: 어드민 도구 (예정)
-- [ ] ⚠️ 미결 2 확인 후 형태 결정
-- [ ] 이미지 → 네모로직 변환
-- [ ] 플레이 테스트 기능
-- [ ] 서버 업로드
+### Phase 7: 어드민 도구 ✅ 완료
+- [x] Flutter Windows 데스크톱 앱 (`admin/` 폴더 별도 프로젝트)
+- [x] 이미지 → 노노그램 그리드 자동 변환 (임계값 슬라이더)
+- [x] 수동 셀 편집 (클릭/드래그)
+- [x] 클루 자동 계산 (Phase 2 엔진 재사용)
+- [x] 플레이 테스트 화면 (직접 풀어보며 검증)
+- [x] JSON 저장 (puzzle_XXX.json 형식)
 
 ### Phase 8: 완성도 & 출시 준비 (예정)
 
@@ -180,16 +184,39 @@ assets/
 
 ## 진행 상황
 
-> 마지막 업데이트: 2026-06-09 (프로젝트 기획 확정)
+> 마지막 업데이트: 2026-06-10 (Phase 7 완료)
 
 ### 완료된 작업
 - pikuman4 기획 논의 및 전체 방향 확정
 - `.cursorrules` 및 `README.md` pikuman4 기준으로 전면 재작성
 - GitHub 저장소 연결: https://github.com/leerion9/04_pikuman
+- **Phase 0 완료**: pikuman3 코드 전면 교체, 노노그램 기반 폴더 구조 재구성
+
+### Phase 0 작업 내용 (2026-06-10)
+- pikuman3 lib/ 코드 전체 삭제 후 노노그램 구조로 재생성
+- pubspec.yaml: sqflite, http 패키지 추가
+- 폴더 구조: core/(database, engine, network, services, widgets) + features/(splash, main, game, result, gallery, settings) 생성
+- 각 폴더 GUIDE.md 작성, 모든 화면 stub 파일 생성, assets/data/puzzles/ 폴더 생성
+
+### Phase 2 작업 내용 (2026-06-10)
+- `nonogram_model.dart`: NonogramPuzzle, GridSize, CellState, GameProgress 모델
+- `clue_calculator.dart`: 이진 배열 → 행·열 클루 계산, 클루 비교
+- `puzzle_validator.dart`: 클루 기반 정답 검증, Easy 모드 셀 검증, 행·열 완성 확인
+
+### Phase 7 작업 내용 (2026-06-10)
+- `admin/` 폴더에 Flutter Windows 데스크톱 프로젝트 생성
+- 이미지 이진화(`image_binarizer.dart`), 홈·에디터·플레이테스트 화면 구현
+- `flutter analyze`: No issues found
+- ⚠️ 실행하려면 Windows 개발자 모드 활성화 필요 (`ms-settings:developers`)
+
+### 개발 순서 변경 결정
+퍼즐 생성 검증 우선을 위해 아래 순서로 진행합니다:
+**Phase 0(완료) → Phase 2(노노그램 엔진) → Phase 7(어드민 도구) → Phase 1·3·4·5·6·8(게임 앱)**
 
 ### 다음 할 일
-- **Phase 0 시작 전**: 미결 1 (서버 환경), 미결 2 (어드민 도구 형태) 확인
-- Phase 0: 기존 pikuman3 코드를 pikuman4 기준으로 전면 교체
+- **어드민 도구 실행**: Windows 개발자 모드 활성화 후 `flutter run -d windows` (admin/ 폴더)
+- **퍼즐 생성 및 검증**: 어드민 도구로 레벨 1~50 퍼즐 제작
+- **Phase 1**: SQLite DB 구조 및 번들 JSON 로더 구현 (게임 앱)
 
 ---
 

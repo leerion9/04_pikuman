@@ -1,46 +1,15 @@
-// 설정 화면 컨트롤러: 효과음·BGM·진동 토글 상태를 관리하고 서비스와 동기화합니다.
-
+// 설정 화면 컨트롤러 - 설정 화면의 토글 상태와 저장 로직을 담당하는 파일
+// Phase 6에서 구현 예정
 import 'package:get/get.dart';
 
-import '../../../core/services/audio_service.dart';
-import '../../../core/services/settings_service.dart';
-
-/// 설정 화면 컨트롤러
+/// 설정 화면의 상태와 비즈니스 로직을 관리합니다.
+///
+/// 구현 예정 내용 (Phase 6):
+/// - 배경음악 ON/OFF 토글
+/// - 효과음 ON/OFF 토글
+/// - 진동 ON/OFF 토글
+/// - 오류 즉시 표시 ON/OFF 토글 (Easy 모드)
+/// - 평점 남기기 버튼 (In-App Review API + 스토어 이동 fallback)
 class SettingsController extends GetxController {
-  SettingsController(this._settings);
-
-  final SettingsService _settings;
-
-  final sfxEnabled = true.obs;
-  final musicEnabled = true.obs;
-  final vibrationEnabled = true.obs;
-
-  @override
-  void onInit() {
-    super.onInit();
-    sfxEnabled.value = _settings.sfxEnabled;
-    musicEnabled.value = _settings.musicEnabled;
-    vibrationEnabled.value = _settings.vibrationEnabled;
-  }
-
-  void setSfx(bool value) {
-    sfxEnabled.value = value;
-    _settings.setSfxEnabled(value);
-  }
-
-  void setMusic(bool value) {
-    musicEnabled.value = value;
-    _settings.setMusicEnabled(value);
-    try {
-      final audio = Get.find<AudioService>();
-      value ? audio.resumeBgm() : audio.pauseBgm();
-    } catch (_) {}
-  }
-
-  void setVibration(bool value) {
-    vibrationEnabled.value = value;
-    _settings.setVibrationEnabled(value);
-  }
-
-  void back() => Get.back();
+  // TODO: Phase 6에서 구현
 }

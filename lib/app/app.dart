@@ -1,70 +1,36 @@
-// 앱 루트 파일: GetMaterialApp 설정·테마·라우팅을 담당합니다.
-
+// 앱 전체 설정 파일 - GetX 라우팅, 테마, 초기 바인딩을 설정하는 파일
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import 'bindings/initial_binding.dart';
 import 'routes/app_pages.dart';
-import '../core/l10n/app_translations.dart';
-import '../core/services/route_sync_service.dart';
-import '../core/widgets/app_banner_scaffold.dart';
 
-/// 앱 전체를 감싸는 최상위 위젯.
-class App extends StatelessWidget {
-  const App({super.key});
+/// pikuman4 앱의 루트 위젯
+/// GetMaterialApp을 사용하여 GetX 기능(라우팅, 상태관리 등)을 활성화합니다.
+class PikumanApp extends StatelessWidget {
+  const PikumanApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'pikuman3 : word puzzle',
-      debugShowCheckedModeBanner: false,
-      initialBinding: InitialBinding(),
-      initialRoute: AppPages.initial,
-      getPages: AppPages.routes,
-      translations: AppTranslations(),
-      locale: const Locale('ko'),
-      fallbackLocale: const Locale('ko'),
-      theme: _buildTheme(),
-      routingCallback: (routing) {
-        if (Get.isRegistered<RouteSyncService>()) {
-          Get.find<RouteSyncService>().updateRoute(routing?.current);
-        }
-      },
-      builder: (context, child) => AppBannerScaffold(child: child),
-    );
-  }
+      // 앱 제목 (멀티태스킹 화면 등에 표시)
+      title: 'pikuman4 : nonogram',
 
-  ThemeData _buildTheme() {
-    return ThemeData(
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: const Color(0xFFFF6B2B),
-        brightness: Brightness.light,
-      ),
-      useMaterial3: true,
-      appBarTheme: const AppBarTheme(
-        backgroundColor: Color(0xFFFF6B2B),
-        foregroundColor: Colors.white,
-        elevation: 0,
-        centerTitle: true,
-        titleTextStyle: TextStyle(
-          color: Colors.white,
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFFFF6B2B),
-          foregroundColor: Colors.white,
-          textStyle: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
+      // 디버그 배너 숨기기
+      debugShowCheckedModeBanner: false,
+
+      // 처음 열리는 화면 (스플래시)
+      initialRoute: AppPages.initial,
+
+      // 전체 라우트(화면 경로) 목록
+      getPages: AppPages.routes,
+
+      // 앱 시작 시 전역 서비스 초기화
+      initialBinding: InitialBinding(),
+
+      // 앱 기본 테마 (추후 디자인 확정 후 변경)
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFE53935)),
+        useMaterial3: true,
       ),
     );
   }

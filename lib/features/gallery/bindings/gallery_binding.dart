@@ -1,0 +1,11 @@
+// 갤러리 화면 의존성 주입 파일 - 갤러리 화면에서 필요한 컨트롤러를 등록하는 파일
+import 'package:get/get.dart';
+import '../controllers/gallery_controller.dart';
+
+/// 갤러리 화면 진입 시 GalleryController를 등록합니다.
+class GalleryBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => GalleryController());
+  }
+}

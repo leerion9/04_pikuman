@@ -51,6 +51,12 @@ dependencies:
   # 인앱 리뷰 (구글 플레이 인앱 리뷰 API)
   in_app_review: ^2.0.10
 
+  # 로컬 DB - 퍼즐 데이터 및 플레이 진행 상태 저장
+  sqflite: ^2.4.2
+
+  # 서버 통신 - 서버에서 퍼즐 JSON 다운로드
+  http: ^1.4.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -73,6 +79,7 @@ flutter:
 
   assets:
     - assets/data/
+    - assets/data/puzzles/
     - assets/images/
     - assets/splash/
     - assets/fonts/
