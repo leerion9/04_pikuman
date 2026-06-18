@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import '../../../core/engine/clue_calculator.dart';
 import '../../../core/engine/nonogram_model.dart';
 import '../../../core/image/image_binarizer.dart';
+import '../../home/controllers/home_controller.dart';
 import '../../play_test/controllers/play_test_controller.dart';
 import '../../../app/routes/app_pages.dart';
 
@@ -59,6 +60,9 @@ class EditorController extends GetxController {
   final levelId = 1.obs;
 
   // ── 상태 ─────────────────────────────────
+  /// 기존 퍼즐 편집 시 원본 레벨 ID (레벨 변경 시 원본 파일 삭제에 사용)
+  int? _originalLevelId;
+
   /// 마우스 드래그 시작 시 그릴지(true) 지울지(false)
   bool? _dragFillValue;
 
@@ -98,7 +102,10 @@ class EditorController extends GetxController {
   // ──────────────────────────────────────────
 
   /// 기존 퍼즐을 불러와 편집 상태로 초기화합니다.
+  /// 함께 저장된 원본 이미지가 있으면 자동으로 로드하여 임계값 조정도 가능하게 합니다.
   void loadExistingPuzzle(NonogramPuzzle puzzle) {
+    // 원본 레벨 ID 기억 (저장 시 레벨이 바뀌면 원본 파일을 삭제하기 위해)
+    _originalLevelId = puzzle.id;
     levelId.value = puzzle.id;
     title.value = puzzle.title;
     gridWidth.value = puzzle.gridSize.width;
@@ -107,6 +114,25 @@ class EditorController extends GetxController {
       puzzle.solution.map((row) => List<int>.from(row)).toList(),
     );
     _recalcClues();
+
+    // 함께 저장된 원본 이미지 자동 로드 (있으면 임계값 조정 활성화)
+    _loadSavedImage(puzzle.id);
+  }
+
+  /// 출력 폴더에서 퍼즐에 해당하는 원본 이미지를 찾아 로드합니다.
+  void _loadSavedImage(int id) {
+    final base = '$outputFolder\\puzzle_${id.toString().padLeft(3, '0')}';
+    for (final ext in ['.png', '.jpg', '.jpeg', '.gif', '.webp']) {
+      final imgFile = File('$base$ext');
+      if (imgFile.existsSync()) {
+        _imageBytes = imgFile.readAsBytesSync();
+        imagePath.value = imgFile.path;
+        return;
+      }
+    }
+    // 이미지 파일 없으면 초기화
+    _imageBytes = null;
+    imagePath.value = null;
   }
 
   // ──────────────────────────────────────────
@@ -247,7 +273,8 @@ class EditorController extends GetxController {
 
   /// 현재 퍼즐을 JSON 파일로 저장합니다.
   ///
-  /// 저장 경로: outputFolder/puzzle_XXX.json
+  /// - 새 퍼즐: outputFolder/puzzle_XXX.json 생성
+  /// - 기존 퍼즐 수정: 레벨 ID가 바뀌었으면 원본 파일 삭제 후 새 파일 생성
   void savePuzzle() {
     if (title.value.trim().isEmpty) {
       Get.snackbar('알림', '퍼즐 제목을 입력해 주세요.',
@@ -260,13 +287,37 @@ class EditorController extends GetxController {
       return;
     }
 
-    final puzzle = _buildPuzzle();
-    final fileName = 'puzzle_${levelId.value.toString().padLeft(3, '0')}.json';
-    final file = File('$outputFolder\\$fileName');
+    final padId = levelId.value.toString().padLeft(3, '0');
 
-    file.writeAsStringSync(
+    // 기존 퍼즐 편집 중 레벨 ID가 바뀌었으면 원본 JSON·이미지 파일 삭제
+    if (_originalLevelId != null && _originalLevelId != levelId.value) {
+      final oldPad = _originalLevelId.toString().padLeft(3, '0');
+      _deleteFileIfExists('$outputFolder\\puzzle_$oldPad.json');
+      for (final ext in ['.png', '.jpg', '.jpeg', '.gif', '.webp']) {
+        _deleteFileIfExists('$outputFolder\\puzzle_$oldPad$ext');
+      }
+    }
+
+    // JSON 저장
+    final puzzle = _buildPuzzle();
+    final fileName = 'puzzle_$padId.json';
+    File('$outputFolder\\$fileName').writeAsStringSync(
       const JsonEncoder.withIndent('  ').convert(puzzle.toJson()),
     );
+
+    // 원본 이미지를 퍼즐 번호에 맞는 파일명으로 함께 저장
+    if (_imageBytes != null && imagePath.value != null) {
+      final ext = _extensionOf(imagePath.value!);
+      File('$outputFolder\\puzzle_$padId$ext').writeAsBytesSync(_imageBytes!);
+    }
+
+    // 저장 후 원본 ID를 현재 ID로 업데이트 (연속 수정 시 중복 삭제 방지)
+    _originalLevelId = levelId.value;
+
+    // 홈 화면 퍼즐 목록 즉시 갱신 (프로그램 재시작 없이 반영)
+    if (Get.isRegistered<HomeController>()) {
+      Get.find<HomeController>().loadPuzzles();
+    }
 
     Get.snackbar(
       '저장 완료',
@@ -296,5 +347,21 @@ class EditorController extends GetxController {
   double get filledRatio {
     if (grid.isEmpty) return 0.0;
     return ImageBinarizer.filledRatio(List<List<int>>.from(grid));
+  }
+
+  /// 이미지가 로드되어 있는지 여부 (임계값 슬라이더 활성화 여부 판단용)
+  bool get hasImage => _imageBytes != null;
+
+  /// 파일 경로에서 확장자를 추출합니다. (예: "cat.png" → ".png")
+  String _extensionOf(String path) {
+    final dot = path.lastIndexOf('.');
+    if (dot == -1) return '.png';
+    return path.substring(dot).toLowerCase();
+  }
+
+  /// 파일이 존재하면 삭제합니다.
+  void _deleteFileIfExists(String path) {
+    final f = File(path);
+    if (f.existsSync()) f.deleteSync();
   }
 }

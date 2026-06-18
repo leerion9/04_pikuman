@@ -241,7 +241,9 @@ class _GridSizeSelector extends StatelessWidget {
   final void Function(int w, int h) onChanged;
 
   static const presets = [
+    (5, 5, '5×5'),
     (10, 10, '10×10'),
+    (12, 12, '12×12'),
     (15, 15, '15×15'),
     (20, 20, '20×20'),
     (25, 25, '25×25'),

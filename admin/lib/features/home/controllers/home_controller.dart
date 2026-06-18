@@ -86,15 +86,20 @@ class HomeController extends GetxController {
 
   /// 새 퍼즐 만들기 화면으로 이동합니다.
   void createNewPuzzle() {
+    // 이전에 남아있는 EditorController가 있으면 먼저 제거
+    Get.delete<EditorController>(force: true);
     Get.put(EditorController(outputFolder: outputFolder.value), permanent: false);
     Get.toNamed(Routes.editor);
   }
 
   /// 기존 퍼즐을 열어 편집 화면으로 이동합니다.
   void openPuzzle(NonogramPuzzle puzzle) {
-    final controller = EditorController(outputFolder: outputFolder.value);
-    controller.loadExistingPuzzle(puzzle);
-    Get.put(controller, permanent: false);
+    // 이전에 남아있는 EditorController가 있으면 먼저 제거
+    Get.delete<EditorController>(force: true);
+    // Get.put → onInit(_initEmptyGrid) 실행 후 loadExistingPuzzle로 덮어써야
+    // 그리드가 정상 로드됨. 순서 중요: put → loadExisting → navigate
+    Get.put(EditorController(outputFolder: outputFolder.value), permanent: false);
+    Get.find<EditorController>().loadExistingPuzzle(puzzle);
     Get.toNamed(Routes.editor);
   }
 
