@@ -4,13 +4,14 @@
     <!-- 네트워크 상태 확인 권한: AdMob에서 권장 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <application
-        android:label="pikuman3 : word puzzle"
+        android:label="pikuman4 : nonogram"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
-        <!-- AdMob App ID (pikuman3) -->
+        <!-- AdMob App ID (pikuman4) ⚠️ 출시 전 실제 App ID로 교체 필요 -->
+        <!-- 현재: Google 제공 테스트 App ID -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-2850426593033777~5529384221"/>
+            android:value="ca-app-pub-3940256099942544~3347511713"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"

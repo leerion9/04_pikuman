@@ -145,30 +145,41 @@ assets/
 - [x] 각 폴더 GUIDE.md 작성
 - [x] flutter analyze: 오류 없음 확인
 
-### Phase 1: 데이터 레이어 구축 (예정)
-- [ ] SQLite DB 구조 설계 및 헬퍼 구현 (puzzles, progress, cleared 테이블)
-- [ ] 번들 JSON 로더 구현 (assets/data/puzzles/)
-- [ ] 서버 API 통신 구현 (⚠️ 미결 1 확인 후 진행)
+### Phase 1: 데이터 레이어 구축 ✅ 완료
+- [x] SQLite DB 구조 설계 및 헬퍼 구현 (puzzles, progress, cleared 테이블)
+- [x] 번들 JSON 로더 구현 (assets/data/puzzles/)
+- [x] 서버 API 통신 stub (⚠️ 미결 1 확인 후 실제 구현)
+- [x] PuzzleRepository: 번들+SQLite 통합 데이터 접근
 
 ### Phase 2: 네모로직 엔진 구현 ✅ 완료
 - [x] `nonogram_model.dart`: 퍼즐 데이터 모델 + 플레이어 진행 상태 모델 (JSON ↔ Dart)
 - [x] `clue_calculator.dart`: 이진 배열 → 행·열 클루 계산
 - [x] `puzzle_validator.dart`: 클루 기반 정답 검증 + Easy 모드 셀 단위 검증
 
-### Phase 3: 화면 뼈대 + 네비게이션 (예정)
-- [ ] GetX 라우팅 설정
-- [ ] 스플래시 1, 2 (서버 신규 레벨 체크 포함)
-- [ ] 메인 화면
+### Phase 3: 화면 뼈대 + 네비게이션 ✅ 완료
+- [x] GetX 라우팅 설정 (app_pages.dart)
+- [x] 스플래시 1 (하늘색 + interpage 로고)
+- [x] 스플래시 2 (빨간 배경 + 캐릭터 + 로딩 + 서버 신규 레벨 체크)
+- [x] 메인 화면 (캐릭터 + 레벨 표시 + Play/갤러리 버튼)
 
-### Phase 4: 게임 플레이 화면 (예정)
-- [ ] 네모로직 그리드 위젯
-- [ ] 행·열 클루 위젯
-- [ ] 채우기/X표시 인터랙션
-- [ ] 타이머, 세이브/로드
+### Phase 4: 게임 플레이 화면 ✅ 완료
+- [x] NonogramGridWidget: 터치/드래그 인터랙티브 격자
+- [x] RowClueWidget / ColClueWidget: 행·열 클루 (완성 행/열 흐리게)
+- [x] 채우기/X표시 모드 + 드래그 연속 입력
+- [x] 경과 타이머 (백그라운드 자동 일시정지)
+- [x] 진행 상태 SQLite 저장·불러오기 (이어하기)
+- [x] Easy 모드: 오류 즉시 표시
 
-### Phase 5: 결과·갤러리 화면 (예정)
+### Phase 5: 결과·갤러리 화면 ✅ 완료
+- [x] 결과 화면: 클리어 메시지 + 썸네일 + 소요 시간 + Home/Next 버튼
+- [x] 갤러리 화면: 클리어 퍼즐 3열 그리드 + 상세 팝업
 
-### Phase 6: 설정·사운드·광고 (예정)
+### Phase 6: 설정·사운드·광고 ✅ 완료
+- [x] SettingsService: SharedPreferences 기반 설정 저장
+- [x] AudioService: BGM 루프 재생 + 효과음 4종
+- [x] AdService: AdMob 전면 광고 (테스트 ID, 10레벨마다)
+- [x] BannerAdWidget: AdMob 배너 광고 (테스트 ID)
+- [x] 설정 화면: 토글 4종 + 인앱 리뷰 버튼
 
 ### Phase 7: 어드민 도구 ✅ 완료
 - [x] Flutter Windows 데스크톱 앱 (`admin/` 폴더 별도 프로젝트)
@@ -184,7 +195,7 @@ assets/
 
 ## 진행 상황
 
-> 마지막 업데이트: 2026-06-11 (어드민 도구 실행 환경 준비 완료)
+> 마지막 업데이트: 2026-06-30 (게임 앱 전체 화면 구현 완료)
 
 ### 완료된 작업
 - pikuman4 기획 논의 및 전체 방향 확정
@@ -240,10 +251,51 @@ assets/
 퍼즐 생성 검증 우선을 위해 아래 순서로 진행합니다:
 **Phase 0(완료) → Phase 2(노노그램 엔진) → Phase 7(어드민 도구) → Phase 1·3·4·5·6·8(게임 앱)**
 
+### Phase 1·3·4·5·6 작업 내용 (2026-06-30)
+
+#### Phase 1 — 데이터 레이어
+| 파일 | 내용 |
+|---|---|
+| `core/database/database_helper.dart` | SQLite 초기화, puzzles·progress·cleared 테이블 생성 |
+| `core/database/puzzle_dao.dart` | 서버 다운로드 퍼즐 CRUD (ID 51~) |
+| `core/database/progress_dao.dart` | 게임 진행 상태 저장·불러오기 (이어하기) |
+| `core/database/cleared_dao.dart` | 클리어 기록 저장·조회 (갤러리용) |
+| `core/data/bundle_loader.dart` | assets/data/puzzles/ JSON 파일 로더 |
+| `core/data/puzzle_repository.dart` | 번들+SQLite 통합 접근, 다음 레벨 ID 조회 |
+| `core/network/puzzle_api_service.dart` | 서버 통신 stub (미결 1 확정 후 구현 예정) |
+
+#### Phase 3 — 스플래시·메인 화면
+- `splash_controller.dart`: 2단계 스플래시(Splash1→Splash2) + 앱 초기화 순서 관리
+- `splash_page.dart`: 하늘색(interpage 로고) → 빨간(캐릭터+로딩 메시지) AnimatedSwitcher
+- `main_controller.dart`: 현재 레벨 표시, Play/갤러리/설정 버튼 이벤트
+- `main_page.dart`: 캐릭터 이미지 + 레벨 뱃지 + 버튼 + 배너 광고
+
+#### Phase 4 — 게임 플레이 화면
+- `game_controller.dart`: 타이머(백그라운드 자동 일시정지), 셀 채우기/X표시, Easy 모드 오류 즉시 표시, SQLite 이어하기, 10레벨마다 전면 광고
+- `widgets/nonogram_grid_widget.dart`: 터치 탭·길게누르기·드래그 연속입력, 5칸 굵은 경계선
+- `widgets/clue_widget.dart`: 행·열 클루 표시, 완성된 행/열 흐리게+취소선
+
+#### Phase 5 — 결과·갤러리 화면
+- `result_controller.dart` + `result_page.dart`: 클리어 애니메이션, 썸네일(Base64/URL), 소요 시간, Home/Next Level 버튼
+- `gallery_controller.dart` + `gallery_page.dart`: 3열 썸네일 그리드, 탭 시 제목·시간 상세 팝업
+
+#### Phase 6 — 서비스·설정 화면
+- `settings_service.dart`: SharedPreferences 기반, 반응형 Rx 상태값(isMusicOn 등)
+- `audio_service.dart`: BGM 루프 재생 + 효과음 4종(채우기/X표시/오류/클리어)
+- `ad_service.dart`: AdMob 전면 광고 (테스트 ID, 로드 후 자동 예비 로드)
+- `banner_ad_widget.dart`: AdMob 배너 광고 StatefulWidget
+- `settings_page.dart`: 토글 4종(음악/효과음/진동/Easy모드) + 인앱 리뷰 버튼
+
+#### 기타
+- `AndroidManifest.xml`: 앱 이름 → "pikuman4 : nonogram", AdMob 테스트 App ID 설정
+- `pubspec.yaml`: `path: ^1.9.0` 추가 (sqflite DB 경로용)
+- `tool/` 구 pikuman3 파일 삭제 (analyze_hint_limits.dart, verify_level_design.dart)
+- **flutter analyze**: No issues found
+
 ### 다음 할 일
-- **퍼즐 생성**: 어드민 도구로 이모지 PNG를 활용해 레벨 1~50 퍼즐 제작 (JSON 파일 생성)
-- **Phase 1**: SQLite DB 구조 및 번들 JSON 로더 구현 (게임 앱)
-- **Phase 3**: GetX 라우팅 설정 + 스플래시·메인 화면 구현
+- **퍼즐 생성**: 어드민 도구로 이모지 PNG → 레벨 1~50 퍼즐 JSON 제작 후 `assets/data/puzzles/`에 배치
+- **실기기 테스트**: `flutter run` 으로 실제 디바이스에서 전체 흐름 확인
+- **Phase 8**: 앱 아이콘·스플래시 이미지 교체, AdMob 실제 ID 교체, 스토어 출시 준비
 
 ---
 
